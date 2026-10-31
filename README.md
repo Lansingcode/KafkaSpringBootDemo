@@ -1,6 +1,8 @@
 # Kafka Spring Boot Demo
 
-一个完整的 Spring Boot Kafka 集成演示项目，展示如何在 Spring Boot 应用中集成 Kafka 消息队列，并提供美观的 Web 界面进行消息管理和实时监控。
+一个完整的 Spring Boot Kafka 集成演示项目，展示如何在 Spring Boot 应用中集成 Kafka 消息队列，并提供美观的 Web 界面进行消息管理和实时监控。  
+参考资料：  
+[Kafka从入门到实战全套教程（31集全）](https://www.bilibili.com/video/BV1sP2RYQEj8/?vd_source=69dd5217d16adc5656c317f744b761e3&spm_id_from=333.788.videopod.episodes&p=22)
 
 ## 📋 项目特性
 
