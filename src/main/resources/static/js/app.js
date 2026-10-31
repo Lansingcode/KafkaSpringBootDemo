@@ -1,7 +1,10 @@
 // API Endpoints
 const API_SEND_MESSAGE = '/msg/send';
 const API_GET_STATS = '/api/stats';
+const API_GET_MESSAGES = '/api/messages';
+const API_CLEAR_MESSAGES = '/api/messages/clear';
 const STATS_REFRESH_INTERVAL = 30000; // 30 seconds
+const MESSAGES_REFRESH_INTERVAL = 5000; // 5 seconds
 
 /**
  * Send a message to Kafka
@@ -27,8 +30,11 @@ function sendMessage() {
             responseDiv.classList.remove('error');
             responseDiv.classList.add('show');
             responseText.textContent = '✅ ' + data;
-            // Refresh stats after sending message
-            setTimeout(refreshStats, 1000);
+            // Refresh stats and messages after sending
+            setTimeout(() => {
+                refreshStats();
+                loadMessages();
+            }, 1000);
         })
         .catch(error => {
             showErrorResponse('❌ 错误: ' + error.message);
@@ -102,14 +108,76 @@ function clearInput() {
 }
 
 /**
+ * Load and display consumed messages
+ */
+function loadMessages() {
+    const container = document.getElementById('messagesContainer');
+    container.innerHTML = '<div class="loading-text">加载消息中...</div>';
+
+    fetch(API_GET_MESSAGES + '?limit=20')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.messages || data.messages.length === 0) {
+                container.innerHTML = '<div class="empty-text">暂无消费的消息</div>';
+                return;
+            }
+
+            const html = data.messages.map(msg => `
+                <div class="message-item">
+                    <div class="message-content">${escapeHtml(msg.content)}</div>
+                    <div class="message-time">${msg.timestamp}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading messages:', error);
+            container.innerHTML = '<div class="empty-text">加载失败</div>';
+        });
+}
+
+/**
+ * Clear consumed messages
+ */
+function clearConsumedMessages() {
+    if (!confirm('确定要清空所有消费的消息吗？')) {
+        return;
+    }
+
+    fetch(API_CLEAR_MESSAGES)
+        .then(response => response.json())
+        .then(data => {
+            loadMessages();
+        })
+        .catch(error => {
+            console.error('Error clearing messages:', error);
+            alert('清空失败');
+        });
+}
+
+/**
+ * Escape HTML special characters
+ */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+/**
  * Initialize application on page load
  */
 function initializeApp() {
     // Load stats on page load
     refreshStats();
+    loadMessages();
 
     // Auto-refresh stats every 30 seconds
     setInterval(refreshStats, STATS_REFRESH_INTERVAL);
+
+    // Auto-refresh messages every 5 seconds
+    setInterval(loadMessages, MESSAGES_REFRESH_INTERVAL);
 
     console.log('Kafka Demo App initialized');
 }

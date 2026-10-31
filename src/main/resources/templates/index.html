@@ -75,6 +75,19 @@
             <div class="response-text" id="responseText"></div>
         </div>
 
+        <!-- Consumed Messages Section -->
+        <h2>📥 消费的消息内容</h2>
+        <div class="messages-header">
+            <span>最近消费的消息（最多显示20条）</span>
+            <div class="header-buttons">
+                <button onclick="loadMessages()" class="small-btn">🔄 刷新</button>
+                <button onclick="clearConsumedMessages()" class="small-btn danger">🗑️ 清空</button>
+            </div>
+        </div>
+        <div class="messages-container" id="messagesContainer">
+            <div class="loading-text">加载消息中...</div>
+        </div>
+
         <!-- API Documentation Section -->
         <div class="api-doc">
             <h3>📚 API 文档</h3>
