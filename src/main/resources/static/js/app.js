@@ -7,10 +7,21 @@ const STATS_REFRESH_INTERVAL = 30000; // 30 seconds
  * Send a message to Kafka
  */
 function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+
+    if (!message) {
+        showErrorResponse('请输入消息内容');
+        return;
+    }
+
     const responseDiv = document.getElementById('response');
     const responseText = document.getElementById('responseText');
 
-    fetch(API_SEND_MESSAGE)
+    const params = new URLSearchParams();
+    params.append('message', message);
+
+    fetch(API_SEND_MESSAGE + '?' + params.toString())
         .then(response => response.text())
         .then(data => {
             responseDiv.classList.remove('error');
@@ -20,9 +31,7 @@ function sendMessage() {
             setTimeout(refreshStats, 1000);
         })
         .catch(error => {
-            responseDiv.classList.add('error');
-            responseDiv.classList.add('show');
-            responseText.textContent = '❌ 错误: ' + error.message;
+            showErrorResponse('❌ 错误: ' + error.message);
         });
 }
 
@@ -71,6 +80,25 @@ function displayStatsError() {
     document.getElementById('consumerOffset').innerHTML = errorText;
     document.getElementById('lag').innerHTML = errorText;
     document.getElementById('progress').innerHTML = errorText;
+}
+
+/**
+ * Show error response message
+ */
+function showErrorResponse(message) {
+    const responseDiv = document.getElementById('response');
+    const responseText = document.getElementById('responseText');
+    responseDiv.classList.add('error');
+    responseDiv.classList.add('show');
+    responseText.textContent = message;
+}
+
+/**
+ * Clear the message input
+ */
+function clearInput() {
+    document.getElementById('messageInput').value = '';
+    document.getElementById('messageInput').focus();
 }
 
 /**

@@ -55,9 +55,19 @@
 
         <!-- Send Message Section -->
         <h2>📤 发送测试消息</h2>
+        <div class="message-input-group">
+            <input
+                type="text"
+                id="messageInput"
+                class="message-input"
+                placeholder="输入要发送的消息内容..."
+                value="this is a message!"
+            >
+            <button onclick="sendMessage()" class="send-btn">📤 发送</button>
+        </div>
         <div class="button-group">
-            <button onclick="sendMessage()">发送消息到 Kafka</button>
             <button class="refresh-btn" onclick="refreshStats()">🔄 刷新统计</button>
+            <button onclick="clearInput()" class="clear-btn">❌ 清空</button>
         </div>
 
         <!-- Response Message Display -->
